@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -7,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = "root";
     $password = "";
     $dbname = "industriala";
+    
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -34,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Password is correct, redirect to the dashboard or desired page
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["username"] = $row["username"];
+            $_SESSION["form_filled"] = false; // Set to false during login
             header("Location: studentDashboard.php");
             exit();
         } else {

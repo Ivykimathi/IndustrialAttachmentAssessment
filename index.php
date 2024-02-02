@@ -12,27 +12,14 @@
 </head>
 
 <body>
-    <!-- <nav class="navbar background h-nav-resp">
-        <ul class="nav-list v-class-resp"> -->
-            <!-- <div class="logo"><img src="img/bot.png" alt="MH"></div> -->
-            <!-- <li><a href="#Home">Home</a></li>
-            <li><a href="#About">About</a></li>
-            <li><a href="#Services">Services</a></li>
-            <li><a href="#Contact">Contact</a></li> -->
-
-        
+    <section class="background firstSection" id="Home">
          <nav id="navbar" class="navbar">
            <ul class="nav-list">
            <li><a class="nav-link scrollto active" href="#Home">Home</a></li>
            <li><a class="nav-link scrollto" href="#About">About</a></li>
            <li><a class="nav-link scrollto" href="#Services">Services</a></li>
            <li><a class="nav-link scrollto" href="#Contact">Contact</a></li>
-                
-           <!-- <a class="nav-link scrollto"><span>Register</span></a>
-           <ul>
-             <li><a href="studentReg.php">Student</a></li>
-             <li><a href="IndustrySupReg.php">Industry supervisor</a></li>
-           </ul> -->
+            
            <li class="dropdown"><a class="nav-link scrollto"><span>Register</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a href="studentReg.php">Student</a></li>
@@ -48,6 +35,8 @@
                 <li><a href="lecturerLogin.php">Lecturer</a></li>
             </ul>
      </li>
+     
+     <li><a class="nav-link scrollto" href="adminLogin.php">Admin</a></li>
         </ul>
         
        
@@ -60,7 +49,7 @@
 
      <!--+++++++++++++++  end of nav    +++++++++++++++++ -->
      
-    <section class="background firstSection" id="Home">
+    <!-- <section class="background firstSection" id="Home"> -->
         
         <div class="box-main">
             <div class="firstHalf">
@@ -73,10 +62,11 @@
                     <!-- <button class="btn"><a href="register.php">Join us</a></button> -->
                 </div>
             </div>
-            <div class="secondHalf"> <img src="img/2.jpg" alt=""></div>
+            <!-- <div class="secondHalf"> <img src="img/7.jpg" alt=""></div> -->
         </div>
 
-    </section><br><br>
+    <!-- </section><br><br> -->
+    </section>
     <section class="section" id="About">
         <div>
             <p class="sectionTag text-big">What do we do?</p>
