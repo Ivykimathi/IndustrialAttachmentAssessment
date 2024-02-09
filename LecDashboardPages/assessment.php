@@ -61,7 +61,7 @@ if ($conn->connect_error) {
         <div class="navcontainer">
             <nav class="nav">
                 <a href="../lecturerDashboard.php" onclick="loadContent('')">Dashboard</a>
-                <a href="viewStudents.php" onclick="loadContent('updateDetails')">View Students</a>  
+                <a href="viewStudent.php" onclick="loadContent('updateDetails')">View Students</a>  
                 <a href="" onclick="loadContent('assessment')">Assessment</a>
                 <a href="#" onclick="loadContent('settings')">Settings</a>
                 <a href="#" onclick="loadContent('institute')">Profile</a>
@@ -74,44 +74,65 @@ if ($conn->connect_error) {
         <div class="main">
         
         
-    <form method="post" action="">
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Question</th>
-                    <th>Marks</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Array of questions
-                $questions = array(
-                    "Understanding of the existing network configuration and the internet 
-                    if exists (describe type of network and various tools that make up the 
-                    network(s) in the organization) and also be able to identify the various
-                     servers used in assisting to connect to the local network and wide area 
-                     network",
-                    "General ability to identify various operating systems environments used in the firm and security threats and be able to (troubleshooting and solve problems, designing solutions).",
-                    "Ability to identify various hardware and software tools used in the firm and be able to (troubleshooting and solve problems, designing solutions).",
-                    "The ability to show understanding of the organizational hierarchy, structure and culture (procedures and systems within the organization and how they contribute to success/failure of the organization)."
-                );
+        <form method="post" action="">
+               <!-- Fields for student name, registration number, place of attachment, and lecturer name -->
+    <label for="student_name">Student Name:</label>
+    <input type="text" id="student_name" name="student_name">
 
-                // Display questions in table rows
-                foreach ($questions as $question) {
-                    echo "<tr>";
-                    echo "<td>$question</td>";
-                    echo "<td><input type='number' name='marks[]' value='0' min='0'></td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+    <label for="reg_number">Registration Number:</label>
+    <input type="text" id="reg_number" name="reg_number">
 
-        <br>
+    <label for="place_of_attachment">Place of Attachment:</label>
+    <input type="text" id="place_of_attachment" name="place_of_attachment">
 
-        <input type="submit" name="calculate" value="Calculate">
+    <label for="lecturer_name">Lecturer Name:</label>
+    <input type="text" id="lecturer_name" name="lecturer_name">
+    <br><br>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>SN</th>
+                <th>Rating scale: Excellent =5; Very good=4; Good =3; Fair =2; Poor =1;</th>
+                <th>Marks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            // Array of questions
+            $questions = array(
+                "Understanding of the existing network configuration and the internet 
+                if exists (describe type of network and various tools that make up the 
+                network(s) in the organization) and also be able to identify the various
+                 servers used in assisting to connect to the local network and wide area 
+                 network",
+                "General ability to identify various operating systems environments used in the firm and security threats and be able to (troubleshooting and solve problems, designing solutions).",
+                "Ability to identify various hardware and software tools used in the firm and be able to (troubleshooting and solve problems, designing solutions).",
+                "The ability to show understanding of the organizational hierarchy, structure and culture (procedures and systems within the organization and how they contribute to success/failure of the organization)."
+            );
 
-    </form>
+            // Display questions in table rows
+            $sn = 1;
+            foreach ($questions as $question) {
+                echo "<tr>";
+                // SN
+                echo "<td>$sn</td>";
+                // Question
+                echo "<td>$question</td>";
+                // Marks
+                echo "<td><input type='number' name='marks[]' value='0' min='0'></td>";
+                echo "</tr>";
+                $sn++; // Increment SN for the next question
+            }
+            ?>
+        </tbody>
+    </table>
+
+    <br>
+
+    <input type="submit" name="calculate" value="Calculate">
+
+</form>
+
 
     <?php
     // Check if the form is submitted

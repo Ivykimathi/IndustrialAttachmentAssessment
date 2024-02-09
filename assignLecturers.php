@@ -16,19 +16,48 @@ $lecturersAssigned = false; // Variable to track whether lecturers are assigned
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['assignLecturers'])) {
         // Your logic to assign lecturers based on student location
-        $assignmentQuery = "UPDATE student_data 
-                            SET lecturer_id = (
-                                SELECT username 
-                                FROM lecturer_reg 
-                                LIMIT 1
-                            )
-                            WHERE student_data.location IS NOT NULL";
 
-        if ($conn->query($assignmentQuery) === TRUE) {
-            echo "Lecturers assigned to students based on location successfully.";
-            $lecturersAssigned = true;
-        } else {
-            echo "Error assigning lecturers: " . $conn->error;
+        // Query to get available lecturers
+        $availableLecturersQuery = "SELECT username FROM lecturer_reg";
+        $availableLecturersResult = $conn->query($availableLecturersQuery);
+//         echo "<pre>";
+// var_dump($availableLecturersResult->fetch_all());
+// echo "</pre>";
+
+if ($availableLecturersResult->num_rows > 0) {
+    // Fetch all available lecturers
+    $lecturers = $availableLecturersResult->fetch_all(MYSQLI_ASSOC);
+
+    foreach ($lecturers as $lecturer) {
+        $lecturerUsername = $lecturer['username'];
+
+        // Query to fetch students randomly (adjust the number as needed)
+        $randomStudentsQuery = "SELECT username, reg_number, location
+                                FROM student_data
+                                WHERE lecturer_id IS NULL
+                                ORDER BY RAND()
+                                LIMIT 5";
+
+        $randomStudentsResult = $conn->query($randomStudentsQuery);
+
+        while ($studentRow = $randomStudentsResult->fetch_assoc()) {
+            $studentUsername = $studentRow['username'];
+
+            // Query to assign the student to the lecturer
+            $assignmentQuery = "UPDATE student_data 
+                                SET lecturer_id = '$lecturerUsername'
+                                WHERE username = '$studentUsername'
+                                AND lecturer_id IS NULL";
+
+                if ($conn->query($assignmentQuery) === TRUE) {
+                    // echo "Lecturer $lecturerUsername assigned students based on location successfully.<br>";
+                    $lecturersAssigned = true;
+                } else {
+                    echo "Error assigning students to lecturer $lecturerUsername: " . $conn->error . "<br>";
+                }
+            }
+        }} else {
+            echo "No available lecturers.";
         }
     }
 }
@@ -70,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="viewAllLecturers.php" onclick="loadContent('messages')">View All Lecturers</a>
                 <a href="" onclick="loadContent('settings')">Assign Lecturers</a>
                 <!-- <a href="#" onclick="loadContent('institute')">Profile</a> -->
-                <a href="../logout.php" onclick="loadContent('logout')">Logout</a>
+                <a href="logout.php" onclick="loadContent('logout')">Logout</a>
 
                 <!-- Add more sidebar links as needed -->
             </nav>
@@ -84,33 +113,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
              
             <!-- Form to assign lecturers based on student location -->
-            <!-- <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <button type="submit" name="assignLecturers">Assign Lecturers Based on Student Location</button>
-            </form> -->
+            </form>
 
-            <!-- Display assigned lecturers and locations in a table if the button is clicked -->
-            <?php if ($lecturersAssigned): ?>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Location</th>
-                            <th>Lecturer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Fetch and display assigned lecturers and locations
-                        $result = $conn->query("SELECT location, lecturer_id FROM student_data");
-                        while ($row = $result->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td>{$row['location']}</td>";
-                            echo "<td>{$row['lecturer_id']}</td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
+ <!-- Display assigned lecturers and locations in a table if the button is clicked -->
+ <?php if ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
+    <p>Students assigned to lecturers based on location successfully.</p>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Registration Number</th>
+                <th>Location</th>
+                <th>Lecturer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            // Fetch and display assigned lecturers, locations, and students
+            $result = $conn->query("SELECT location, lecturer_id, username, reg_number FROM student_data WHERE lecturer_id IS NOT NULL");
+            while ($row = $result->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>{$row['username']}</td>";
+                echo "<td>{$row['reg_number']}</td>";
+                echo "<td>{$row['location']}</td>";
+                echo "<td>{$row['lecturer_id']}</td>";
+               
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+<?php endif; ?>
+
         </div>
     </div>
 

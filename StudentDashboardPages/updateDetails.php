@@ -17,15 +17,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
+    
 
     // Retrieve data from the form
     $institution_name = $_POST['institution_name'];
     $location = $_POST['location'];
 
+     // Check if the user has already filled the form in the new table
+     $username = $_SESSION['username'];
+     $checkQuery = "SELECT * FROM student_data WHERE username = '$username'";
+     $checkResult = $conn->query($checkQuery);
+ 
+     if ($checkResult->num_rows > 0) {
+         // User has already filled the form
+         $formMessage = "You have already filled the form.";
+     }
+
+
     // Check if the user has already filled the form
-    if (isset($_SESSION['update_details_filled'])) {
-        $formMessage = "You have already filled the form. You cannot fill it twice.";
-    } else {
+    // if (isset($_SESSION['form_filled'])) {
+    //     $formMessage = "You have already filled the form. You cannot fill it twice.";
+    // } 
+     else {
         // Retrieve username from the session
         $username = $_SESSION['username'];
 
@@ -51,6 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $formMessage = "Error fetching registration number for the given username.";
         }
+        $_SESSION['form_filled'] = true;
     }
 
     // Close the database connection

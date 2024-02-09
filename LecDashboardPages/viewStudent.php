@@ -18,6 +18,9 @@ if ($conn->connect_error) {
 // Query to get all students
 $sql = "SELECT username, reg_number, firm_name, location FROM student_data WHERE location='chuka'";
 $result = $conn->query($sql);
+if (!$result) {
+    die("Error in SQL query: " . $conn->error);
+}
 ?>
 
 
@@ -78,7 +81,7 @@ $result = $conn->query($sql);
         <?php
         if ($result->num_rows > 0) {
             echo "<table>";
-            echo "<tr><th>Username</th><th>Reg</th><th>Firm</th><th>Location</th></tr>";
+            echo "<tr><th>Username</th><th>Reg</th><th>Firm</th><th>Location</th><th>Status</th></tr>";
 
             while ($student = $result->fetch_assoc()) {
                 echo "<tr>";
@@ -87,6 +90,8 @@ $result = $conn->query($sql);
                 echo "<td>" . $student['firm_name'] . "</td>";
                 echo "<td>" . $student['location'] . "</td>";
                 echo "</tr>";
+
+                
             }
 
             echo "</table>";
