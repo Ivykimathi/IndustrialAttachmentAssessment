@@ -2,39 +2,54 @@
 <?php
 session_start();
 
-//$servername = "localhost";
-// $username = "root";
-// $password = "";
-// $dbname = "industriala";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "industriala";
 
-// $conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check the connection
-// if ($conn->connect_error) {
-//     die("Connection failed: " . $conn->connect_error);
-// }
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 
-// $query = "SELECT username, remarks, created_at FROM lrc_assessment WHERE username = ?";
+// Retrieve student's assessments
+$student_name = $_SESSION['username']; 
 
-// $sessionUsername = $_SESSION["username"];
+$query = "SELECT lecturer, lec_marks , supervisor, sup_marks FROM assessment WHERE student_name = ?";
+
+$student_name = $_SESSION["username"]; 
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $student_name);
+$stmt->execute();
+$stmt->store_result();
+
+ // Use a different variable name
 
 // $stmt = $conn->prepare($query);
-// $stmt->bind_param("s", $sessionUsername);
+// $stmt->bind_param("s", $student_name); // Use the new variable name here
 // $stmt->execute();
-// $stmt->bind_result($sender, $messageContent, $timestamp);
-
-// Fetch all messages into an array
-// $messages = array();
-// while ($stmt->fetch()) {
-//     $messages[] = array(
-//         'sender' => $sender,
-//         'message_content' => $messageContent,
-//         'timestamp' => $timestamp
-//     );
-// }
+// $stmt->bind_result($lecturer, $lec_marks,$supervisor,$sup_marks); // Use a different variable name
+// $stmt->fetch();
 // $stmt->close();
+
+// Initialize variables
+$lecturer = "";
+$lec_marks = "";
+$supervisor = "";
+$sup_marks = "";
+
+// Check if assessment data is available
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($lecturer, $lec_marks, $supervisor, $sup_marks);
+    $stmt->fetch();
+}
+$stmt->close();
+$conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,18 +59,19 @@ session_start();
     <title>Messages</title>
     <link rel="stylesheet" href="../css/dashboardStyle.css">
     <style>
-        .message-container {
+          table {
+            border-collapse: collapse;
+            width: 50%;
             margin-top: 20px;
         }
 
-        .message {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
+        table, th, td {
+            border: 1px solid black;
         }
 
-        .no-messages {
-            font-style: italic;
+        th, td {
+            padding: 10px;
+            text-align: left;
         }
     </style>
 </head>
@@ -90,24 +106,42 @@ session_start();
         </div>
 
         <div class="main">
-           
-        <h2>No messages yet!!</h2>
+        <?php if ($lecturer !== "" && $supervisor !== ""): ?>
+            <h2>Hey&nbsp;<?php echo htmlspecialchars($_SESSION["username"]); ?>,&nbsp;Here are your Results!</h2>
+       
+                <!-- <h3>Here are your Results!</h3> -->
+                <table>
+                    <tr>
+                        <th>Lecturer Name</th>
+                        <td><?php echo htmlspecialchars($lecturer); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Score out of 20</th>
+                        <td><?php echo htmlspecialchars($lec_marks); ?></td>
+                    </tr>
+                </table>
 
-               <!--   <div class="message-container">
-                    <?php
-                    if (!empty($messages)) {
-                        foreach ($messages as $message) {
-                            echo '<div class="message">';
-                            echo '<p><strong>From:</strong> ' . htmlspecialchars($message['sender']) . '</p>';
-                            echo '<p><strong>Message:</strong> ' . htmlspecialchars($message['message_content']) . '</p>';
-                            echo '<p><strong>Timestamp:</strong> ' . htmlspecialchars($message['timestamp']) . '</p>';
-                            echo '</div>';
-                        }
-                    } else {
-                        echo '<p class="no-messages">No messages available.</p>';
-                    }
-                    ?>
-                </div> -->
+                <table>
+                    <tr>
+                        <th>Supervisor Name</th>
+                        <td><?php echo htmlspecialchars($supervisor); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Score out of 75</th>
+                        <td><?php echo htmlspecialchars($sup_marks); ?></td>
+                    </tr>
+                </table>
+                <?php elseif ($lecturer !== "" && $supervisor === ""): ?>
+                <p>Lecturer has assessed you. Waiting for supervisor's assessment.</p>
+            <?php elseif ($lecturer === "" && $supervisor !== ""): ?>
+                <p>Supervisor has assessed you. Waiting for lecturer's assessment.</p>
+           
+            <?php else: ?>
+                <h2>Hey&nbsp;<?php echo htmlspecialchars($_SESSION["username"]); ?>,&nbsp;</h2>
+       
+                <p>You have not been assessed by lecturers or supervisors yet. Please wait for the assessments to be completed.</p>
+            <?php endif; ?>
+                
 
         </div>
     </div>

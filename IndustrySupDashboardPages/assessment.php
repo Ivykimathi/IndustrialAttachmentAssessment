@@ -16,17 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $student_name = $_POST['student_name'];
     $reg = $_POST['reg_number'];
-    $lecturer_name = $_SESSION['username']; // Retrieve lecturer's name from session
+    $supervisor = $_SESSION['username']; // Retrieve lecturer's name from session
     $marks = isset($_POST["marks"]) ? $_POST["marks"] : array();
 
     // Calculate the total score
-    $lec_marks = array_sum($marks);
+    $sup_marks = array_sum($marks);
 
     // SQL to insert assessment into database
-    $sql = "INSERT INTO assessment (student_name, reg, lecturer, lec_marks) VALUES ('$student_name', '$reg', '$lecturer_name', '$lec_marks')";
+    // $sql = "INSERT INTO assessment (student_name, reg, supervisor, sup_marks) VALUES ('$student_name', '$reg', '$supervisor', '$sup_marks')";
 
-    if ($conn->query($sql) === TRUE) {
+
+    $sql = "UPDATE assessment 
+    SET supervisor = '$supervisor', sup_marks = '$sup_marks'
+    WHERE student_name = '$student_name' AND reg = '$reg'";
+    
+   
+if ($conn->query($sql) === TRUE) {
         // echo "Assessment saved successfully.";
+        $formMessage = "Form submitted successfully!";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
@@ -41,7 +48,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecturer Dashboard</title>
+    <title>Industry Supervisor Dashboard</title>
     <link rel="stylesheet" href="../css/dashboardStyle.css">
 </head>
 <style>
@@ -62,7 +69,7 @@ $conn->close();
     <!-- Header Part -->
     <header>
         <div class="logosec">
-            <div class="logo">Lecturer Dashboard</div>
+            <div class="logo">Industry Supervisor Dashboard</div>
             <div class="menuicn">
                 <div class="hamburger" onclick="toggleNav()">
                     <div></div>
@@ -76,11 +83,10 @@ $conn->close();
     <div class="main-container">
         <div class="navcontainer">
             <nav class="nav">
-                <a href="../lecturerDashboard.php" onclick="loadContent('')">Dashboard</a>
-                <a href="viewStudent.php" onclick="loadContent('updateDetails')">View Students</a>  
+                <a href="../industrySupDashboard.php" onclick="loadContent('')">Dashboard</a> 
                 <a href="" onclick="loadContent('assessment')">Assessment</a>
-                <a href="#" onclick="loadContent('settings')">Settings</a>
-                <a href="#" onclick="loadContent('institute')">Profile</a>
+                <!-- <a href="#" onclick="loadContent('settings')">Settings</a>
+                <a href="#" onclick="loadContent('institute')">Profile</a> -->
                 <a href="../logout.php" onclick="loadContent('institute')">Logout</a>
 
                 <!-- Add more sidebar links as needed -->
@@ -89,8 +95,12 @@ $conn->close();
 
         <div class="main">
         
-        
-        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+       <?php
+        if (isset($formMessage)) {
+    echo "<p style='color: red; font-weight: bold;'>$formMessage</p>";
+}
+?>
+        <form method="post" action="">
                <!-- Fields for student name, registration number, place of attachment -->
     <label for="student_name">Student Name:</label>
     <input type="text" id="student_name" name="student_name">
@@ -114,14 +124,29 @@ $conn->close();
             <?php
             // Array of questions
             $questions = array(
-                "Understanding of the existing network configuration and the internet 
-                if exists (describe type of network and various tools that make up the 
-                network(s) in the organization) and also be able to identify the various
-                 servers used in assisting to connect to the local network and wide area 
-                 network",
-                "General ability to identify various operating systems environments used in the firm and security threats and be able to (troubleshooting and solve problems, designing solutions).",
-                "Ability to identify various hardware and software tools used in the firm and be able to (troubleshooting and solve problems, designing solutions).",
-                "The ability to show understanding of the organizational hierarchy, structure and culture (procedures and systems within the organization and how they contribute to success/failure of the organization)."
+               "People relations (Relationship with Colleagues, public relations, Social poise, Diplomacy, and
+                        good taste)",
+            "Tolerance for Ambiguity (Ability to handle crisis, problems, or uncertainty, 
+            Level of maturity, Controlled temperament)",
+           "Ability to apply computer science knowledge learned in class (troubleshooting and 
+                    solving problems, designing solutions)",
+                    "Physical Appearance and personal Qualities (Manner of dressing and
+                     general grooming confidence conveyed by body language, work etiquette,
+                      determination, imagination leadership drive,mannerism, respectful).",
+                    "Work- ethic Orientation (interest shown in the work, discipline, 
+                    enthusiasm, responsibility, shows creativity and originality)",
+                   " Innovation and creativity (problem identification, problem analysis
+                    solution given, viability, shows creativity and originality)",
+                   " Student daily chores (Consistency, clarity, comprehensiveness, 
+                   relevance, analytical)",
+                   " Punctuality at work",
+                    "Duty consciousness (keenness in work)",
+                   " Obedience (following Instructions)",
+                   " Orderliness (well organized in work performance)",
+                   " Dependability (requiring little supervision)",
+                    "Industriousness (hard working and usefulness)",
+                     "Observation of code of conduct (following work regulations)",
+                    "Overall Performance of field attachment (industrial Supervisors score)",
             );
 
             // Display questions in table rows
@@ -133,7 +158,7 @@ $conn->close();
                 // Question
                 echo "<td>$question</td>";
                 // Marks
-                echo "<td><input type='number' name='marks[]' value='0' min='0'></td>";
+                echo "<td><input type='number' name='marks[]' value='' min='0'></td>";
                 echo "</tr>";
                 $sn++; // Increment SN for the next question
             }
