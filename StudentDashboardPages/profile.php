@@ -77,7 +77,7 @@ $stmt->close();
                 <a href="../studentDashboard.php" onclick="loadContent('')">Dashboard</a>
                 <a href="updateDetails.php" onclick="loadContent('updateDetails')">Attachment Institute</a>
                 <a href="messages.php" onclick="loadContent('messages')">Messages</a>
-                <a href="#" onclick="loadContent('settings')">Settings</a>
+                <!-- <a href="#" onclick="loadContent('settings')">Settings</a> -->
                 <a href="" onclick="loadContent('institute')">Profile</a>
                 <a href="../logout.php" onclick="loadContent('institute')">Logout</a>
 
