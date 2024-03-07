@@ -4,43 +4,46 @@ $username = "root";
 $password = "";
 $dbname = "industriala";
 
+// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check the connection
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Step 1: Retrieve student locations from the database
-$sql = "SELECT location, COUNT(*) as num_students FROM student_data GROUP BY location";
-$result = $conn->query($sql);
+// Step 1: Retrieve student locations and their counts from the database
+$sql_students = "SELECT location, COUNT(*) as num_students FROM student_data GROUP BY location";
+$result_students = $conn->query($sql_students);
 
 // Step 2: Retrieve lecturers from the database
-$sql_lecturers = "SELECT id, location_assigned, COUNT(*) as num_students_assigned FROM lecturer_reg GROUP BY location_assigned";
+$sql_lecturers = "SELECT id, location_assigned FROM lecturer_reg";
 $result_lecturers = $conn->query($sql_lecturers);
 
-// Store location students count in an associative array
+// Store student counts for each location in an associative array
 $location_students = [];
-while ($row = $result->fetch_assoc()) {
-    $location_students[$row['location']] = $row['num_students'];
+while ($row_students = $result_students->fetch_assoc()) {
+    $location_students[$row_students['location']] = $row_students['num_students'];
 }
 
 // Assign lecturers to locations based on student count
 while ($row_lecturer = $result_lecturers->fetch_assoc()) {
     $lecturer_id = $row_lecturer['id'];
     $location_assigned = $row_lecturer['location_assigned'];
-    
+
+    // If the lecturer is already assigned a location, continue to the next lecturer
+    if ($location_assigned !== null) {
+        continue;
+    }
+
+    // Find a location for the lecturer
     foreach ($location_students as $location => $num_students) {
-        // Check if lecturer is already assigned to a location
-        if ($location_assigned !== null) {
-            continue;
-        }
-        
-        // Check if the number of students assigned to this location is less than 20
-        if ($num_students < 20) {
+        // Check if the location has fewer than 10 students
+        if ($num_students < 10) {
             // Assign the lecturer to this location
             $location_assigned = $location;
             $location_students[$location]++; // Increment the student count for this location
+            break; // Exit the loop after assigning the lecturer
         }
     }
 
@@ -48,7 +51,12 @@ while ($row_lecturer = $result_lecturers->fetch_assoc()) {
     $sql_update = "UPDATE lecturer_reg SET location_assigned = '$location_assigned' WHERE id = $lecturer_id";
     $conn->query($sql_update);
 }
+
+
+// Close connection
+$conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -100,7 +108,30 @@ while ($row_lecturer = $result_lecturers->fetch_assoc()) {
             <div class="searchbar2">
                 <h2>Welcome to your Admin Dashboard!!</h2>
             </div>
-            <p>Students assigned to lecturers based on location successfully.</p>
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+        <input type="submit" value="Assign Lecturers">
+    </form>
+    <?php
+    
+  // Display assigned locations for each lecturer
+  echo "<h2>Assigned Locations</h2>";
+  echo "<table border='1'>";
+  echo "<tr><th>Lecturer Name</th><th>Assigned Location</th></tr>";
+
+  $sql_assigned_locations = "SELECT username, location_assigned FROM lecturer_reg";
+  $result_assigned_locations = $conn->query($sql_assigned_locations);
+
+  if ($result_assigned_locations->num_rows > 0) {
+      while ($row = $result_assigned_locations->fetch_assoc()) {
+          echo "<tr><td>" . $row["username"] . "</td><td>" . $row["location_assigned"] . "</td></tr>";
+      }
+  } else {
+      echo "<tr><td colspan='2'>No data available</td></tr>";
+  }
+
+  echo "</table>";
+
+    ?>
         </div>
     </div>
     <script>

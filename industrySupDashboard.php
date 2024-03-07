@@ -52,23 +52,23 @@ session_start();
             <div id="dynamicContent" class="box-container">
                 <!-- Dynamic content will be loaded here -->
                 <div class="box">
-    <img src="path/to/icon1.png" alt="Icon 1">
+    <!-- <img src="path/to/icon1.png" alt="Icon 1"> -->
     <div class="text">
-        <h2>View Students assigned to</h2>
-        <p>You are able to know students assigned to you based on their location.</p>
+        <h2>Give remarks on Student Performance</h2>
+        <p>You are able to tell us how the student is adopting in the industry.</p>
     </div>
 </div>
 
 <!-- Card 2 -->
 <div class="box">
-    <img src="path/to/icon2.png" alt="Icon 2">
+    <!-- <img src="path/to/icon2.png" alt="Icon 2"> -->
     <div class="text">
         <h2>Assign Marks</h2>
         <p>You will now assign student their marks here..</p>
     </div>
 </div>
                 <div class="box">
-                  <img src="path/to/icon1.png" alt="Icon 1">
+                  <!-- <img src="path/to/icon1.png" alt="Icon 1"> -->
                  <div class="text">
                  <h2>Assess their performance</h2>
                     <p>You can now asssess weekly performance.</p>
