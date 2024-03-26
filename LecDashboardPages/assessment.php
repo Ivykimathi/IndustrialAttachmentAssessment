@@ -23,10 +23,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lec_marks = array_sum($marks);
 
     // SQL to insert assessment into database
-    $sql = "INSERT INTO assessment (student_name, reg, lecturer, lec_marks) VALUES ('$student_name', '$reg', '$lecturer_name', '$lec_marks')";
+    // $sql = "INSERT INTO assessment (student_name, reg, lecturer, lec_marks) VALUES ('$student_name', '$reg', '$lecturer_name', '$lec_marks')";
+
+    $sql_check = "SELECT * FROM assessment WHERE student_name = '$student_name' AND reg = '$reg'";
+$result_check = mysqli_query($conn, $sql_check);
+
+if (mysqli_num_rows($result_check) > 0) {
+    // Record exists, perform update
+    $sql = "UPDATE assessment 
+        SET lecturer = '$lecturer_name', lec_marks = '$lec_marks'
+        WHERE student_name = '$student_name' AND reg = '$reg'";
+} else {
+    // Record does not exist, perform insert
+    $sql = "INSERT INTO assessment (student_name, reg, lecturer, lec_marks) 
+        VALUES ('$student_name', '$reg', '$lecturer', '$lec_marks')";
+}
 
     if ($conn->query($sql) === TRUE) {
         // echo "Assessment saved successfully.";
+        $formMessage="Form submitted successfully!";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
@@ -89,7 +104,11 @@ $conn->close();
 
         <div class="main">
         
-        
+        <?php
+        if (isset($formMessage)) {
+    echo "<p style='color: red; font-weight: bold;'>$formMessage</p>";
+}
+?>
         <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                <!-- Fields for student name, registration number, place of attachment -->
     <label for="student_name">Student Name:</label>

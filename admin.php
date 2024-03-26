@@ -34,6 +34,7 @@
             <nav class="nav">
                 <a href="" onclick="loadContent('')">Dashboard</a>
                 <a href="viewAllStudents.php" onclick="loadContent('viewAllStudents')">View All Students</a>
+                <a href="viewAssessment.php" onclick="loadContent('viewAssessment')">View Assessments</a>
                 <a href="viewAllLecturers.php" onclick="loadContent('messages')">View All Lecturers</a>
                 <a href="assignLecturers.php" onclick="loadContent('settings')">Assign Lecturers</a>
                 <!-- <a href="#" onclick="loadContent('institute')">Profile</a> -->
@@ -109,18 +110,18 @@
             toggleNav(); // Close the sidebar when a link is clicked
             dynamicContent.innerHTML = ''; // Clear existing content
 
-            if (page) {
-                // Load content dynamically from separate PHP files
-                // fetch(`${page}.php`)
-                //     .then(response => response.text())
-                //     .then(data => {
-                //         dynamicContent.innerHTML = data;
-                //     })
-                    .catch(error => {
-                        console.error('Error loading content:', error);
-                        dynamicContent.innerHTML = '<h2>Error loading content</h2>';
-                    });
-            }
+            // if (page) {
+            //     // Load content dynamically from separate PHP files
+            //     // fetch(`${page}.php`)
+            //     //     .then(response => response.text())
+            //     //     .then(data => {
+            //     //         dynamicContent.innerHTML = data;
+            //     //     })
+            // //         .catch(error => {
+            // //             console.error('Error loading content:', error);
+            // //             dynamicContent.innerHTML = '<h2>Error loading content</h2>';
+            // //         });
+            // // }
         
         }
     </script>

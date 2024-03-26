@@ -106,41 +106,43 @@ $conn->close();
         </div>
 
         <div class="main">
-        <?php if ($lecturer !== "" && $supervisor !== ""): ?>
-            <h2>Hey&nbsp;<?php echo htmlspecialchars($_SESSION["username"]); ?>,&nbsp;Here are your Results!</h2>
-       
-                <!-- <h3>Here are your Results!</h3> -->
-                <table>
-                    <tr>
-                        <th>Lecturer Name</th>
-                        <td><?php echo htmlspecialchars($lecturer); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Score out of 20</th>
-                        <td><?php echo htmlspecialchars($lec_marks); ?></td>
-                    </tr>
-                </table>
+        <?php if ($lecturer !== "" || $supervisor !== ""): ?>
+    <h2>Hey <?php echo htmlspecialchars($_SESSION["username"]); ?>, Here are your Results!</h2>
+    <?php if ($lecturer !== ""): ?>
+        <table>
+            <tr>
+                <th>Lecturer Name</th>
+                <td><?php echo htmlspecialchars($lecturer); ?></td>
+            </tr>
+            <tr>
+                <th>Score out of 20</th>
+                <td><?php echo htmlspecialchars($lec_marks); ?></td>
+            </tr>
+        </table>
+    <?php else: ?>
+        <p style="color:red">Your Lecturer has not assessed you yet.</p>
+    <?php endif; ?>
 
-                <table>
-                    <tr>
-                        <th>Supervisor Name</th>
-                        <td><?php echo htmlspecialchars($supervisor); ?></td>
-                    </tr>
-                    <tr>
-                        <th>Score out of 75</th>
-                        <td><?php echo htmlspecialchars($sup_marks); ?></td>
-                    </tr>
-                </table>
-                <?php elseif ($lecturer !== "" && $supervisor === ""): ?>
-                <p>Lecturer has assessed you. Waiting for supervisor's assessment.</p>
-            <?php elseif ($lecturer === "" && $supervisor !== ""): ?>
-                <p>Supervisor has assessed you. Waiting for lecturer's assessment.</p>
-           
-            <?php else: ?>
-                <h2>Hey&nbsp;<?php echo htmlspecialchars($_SESSION["username"]); ?>,&nbsp;</h2>
-       
-                <p>You have not been assessed by lecturers or supervisors yet. Please wait for the assessments to be completed.</p>
-            <?php endif; ?>
+    <?php if ($supervisor !== ""): ?>
+        <table>
+            <tr>
+                <th>Supervisor Name</th>
+                <td><?php echo htmlspecialchars($supervisor); ?></td>
+            </tr>
+            <tr>
+                <th>Score out of 75</th>
+                <td><?php echo htmlspecialchars($sup_marks); ?></td>
+            </tr>
+        </table>
+    <?php else: ?>
+        <p style="color:red">Your Firm Supervisor has not assessed you yet.</p>
+    <?php endif; ?>
+
+<?php else: ?>
+    <h2>Hey <?php echo htmlspecialchars($_SESSION["username"]); ?>,</h2>
+    <p style="color:red"> Opps!!!You have not been assessed by lecturers or supervisors yet. Please wait for the assessments to be completed.</p>
+<?php endif; ?>
+
                 
 
         </div>

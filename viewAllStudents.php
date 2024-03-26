@@ -64,6 +64,7 @@ $result = $conn->query($sql);
             <nav class="nav">
                 <a href="admin.php" onclick="loadContent('')">Dashboard</a>
                 <a href="" onclick="loadContent('updateDetails')">View All Students</a>
+                <a href="viewAssessment.php" onclick="loadContent('viewAssessment')">View Assessments</a>
                 <a href="viewAllLecturers.php" onclick="loadContent('messages')">View All Lecturers</a>
                 <a href="assignLecturers.php" onclick="loadContent('settings')">Assign Lecturers</a>
                 <a href="logout.php" onclick="loadContent('institute')">Logout</a>
@@ -77,7 +78,7 @@ $result = $conn->query($sql);
         <?php
         if ($result->num_rows > 0) {
             echo "<table>";
-            echo "<tr><th>Username</th><th>Reg</th><th>Firm</th><th>Location</th></tr>";
+            echo "<tr><th>Student Name</th><th>Registration</th><th>Firm</th><th>Location</th></tr>";
 
             while ($student = $result->fetch_assoc()) {
                 echo "<tr>";

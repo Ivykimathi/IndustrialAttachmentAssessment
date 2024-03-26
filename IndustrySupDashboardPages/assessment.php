@@ -26,10 +26,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // $sql = "INSERT INTO assessment (student_name, reg, supervisor, sup_marks) VALUES ('$student_name', '$reg', '$supervisor', '$sup_marks')";
 
 
-    $sql = "UPDATE assessment 
-    SET supervisor = '$supervisor', sup_marks = '$sup_marks'
-    WHERE student_name = '$student_name' AND reg = '$reg'";
+    // $sql = "UPDATE assessment 
+    // SET supervisor = '$supervisor', sup_marks = '$sup_marks'
+    // WHERE student_name = '$student_name' AND reg = '$reg'";
     
+    // Check if the record exists
+$sql_check = "SELECT * FROM assessment WHERE student_name = '$student_name' AND reg = '$reg'";
+$result_check = mysqli_query($conn, $sql_check);
+
+if (mysqli_num_rows($result_check) > 0) {
+    // Record exists, perform update
+    $sql = "UPDATE assessment 
+        SET supervisor = '$supervisor', sup_marks = '$sup_marks'
+        WHERE student_name = '$student_name' AND reg = '$reg'";
+} else {
+    // Record does not exist, perform insert
+    $sql = "INSERT INTO assessment (student_name, reg, supervisor, sup_marks) 
+        VALUES ('$student_name', '$reg', '$supervisor', '$sup_marks')";
+}
    
 if ($conn->query($sql) === TRUE) {
         // echo "Assessment saved successfully.";
